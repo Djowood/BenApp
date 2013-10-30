@@ -15,5 +15,6 @@ public class BenApp {
   public static void main(String[] args) throws IOException {
       //GetUrl get = new GetUrl();                                    //create an instance of GetUrl
       FindInsideFile find = new FindInsideFile();
+      System.out.println(find);
   }
 }
