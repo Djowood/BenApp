@@ -17,8 +17,8 @@ public class FindInsideFile{
  
     File fe;                                                                    //To open the file = the name file above
     
-    ArrayList<String> hotelName = new ArrayList<String>();                      //For the hotel names
-    ArrayList<String> hotelPrice = new ArrayList<String>();                     //For the prices
+    ArrayList<Room> hotelName = new ArrayList<>();                      //For the hotel names
+    
     
     int roomType;                                                               //=1 for a on people room, =2 for a two peoples room etc. 
 
@@ -60,10 +60,12 @@ public class FindInsideFile{
                         while(enr.charAt(i)!='\"'){                 //we put the hotel name inside an ArrayList (hotelName).
                             name.insert(j++, enr.charAt(i++));
                         }
-                        hotelName.add(name.toString());
+                        Room room = new Room();
+                        room.setName(name.toString());
+                        hotelName.add(room);
                         name.delete(0, name.length());
                         //==============================================================================
-                        if(getRoomPrice(fent, enr));               //then we call the method in the aim to get price of this hotel. 
+                        if(getRoomPrice(fent, enr, room));               //then we call the method in the aim to get price of this hotel. 
                     }
                     j=0;
                 }
@@ -72,7 +74,7 @@ public class FindInsideFile{
         }
     }
     
-    private boolean getRoomPrice(BufferedReader fent, String enr) throws IOException{       //get price of room for an hotel 
+    private boolean getRoomPrice(BufferedReader fent, String enr, Room room) throws IOException{       //get price of room for an hotel 
         roomType=2;         //the roomType. 
         
         String temp;        //to put string inside variable (see juste below)
@@ -114,11 +116,11 @@ public class FindInsideFile{
                     if(j == varRoomPrice.length-1 && getRoomPers(fent, enr)==roomType){            //And if we do
                         
                         j=0;
-                        
+                        i++;
                         while(enr.charAt(i)!='\"'){
                             price.insert(j++, enr.charAt(i++));
                         }
-                        hotelPrice.add(price.toString());                       // we put it in an arraylist hotelPrice
+                        room.addPrice(Double.valueOf(price.toString()));
                         price.delete(0, price.length());
                         
                     }
@@ -130,8 +132,8 @@ public class FindInsideFile{
                         j++;
                     }
                     if(j == hotelPush.length-1){
-                        price.insert(0, 'x');                                       //we put an x inside the list hotelPrice, in the aim to see it when we want to display prices
-                        hotelPrice.add(price.toString());
+                        price.insert(0, '0');                                       //we put an x inside the list hotelPrice, in the aim to see it when we want to display prices
+                        room.addPrice(Integer.valueOf(price.toString()));
                         return true;                                    //exist the prog
                     }
                 }
@@ -191,20 +193,8 @@ public class FindInsideFile{
     public String toString(){
         String str;
         str = "I've found " + hotelName.size() + " hotel\nWhich are : ";
-        int h=0;
-        String y=hotelPrice.get(h);
-        for (int z=0;z<hotelName.size();z++){
-            str +=hotelName.get(z);
-            str +="\tPrix : ";
-            y=hotelPrice.get(h);
-            while(!y.equals("x") && h<hotelPrice.size()-1){
-                str +=hotelPrice.get(h);
-                y=hotelPrice.get(++h);
-            }
-            str+="\n";
-            if(h<hotelPrice.size()-1){
-                h++;
-            }
+        for (int i=0;i<hotelName.size();i++){
+            str+=(hotelName.get(i));
         }
         return str;
     }
