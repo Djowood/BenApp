@@ -17,7 +17,7 @@ public class FindInsideFile{
  
     File fe;                                                                    //To open the file = the name file above
     
-    ArrayList<Room> hotelName = new ArrayList<>();                      //For the hotel names
+    ArrayList<Room> hotelList = new ArrayList<>();                      //For the hotel names
     
     
     int roomType;                                                               //=1 for a on people room, =2 for a two peoples room etc. 
@@ -57,15 +57,16 @@ public class FindInsideFile{
                     if(j == varHotelName.length-1){                        //if the size of j = size of varHotelName, then we have the word, so we can treat it
                         i++;
                         j=0;
-                        while(enr.charAt(i)!='\"'){                 //we put the hotel name inside an ArrayList (hotelName).
+                        while(enr.charAt(i)!='\"'){                 //we put the hotel name inside an ArrayList (hotelList).
                             name.insert(j++, enr.charAt(i++));
                         }
                         Room room = new Room();
                         room.setName(name.toString());
-                        hotelName.add(room);
+                        hotelList.add(room);
                         name.delete(0, name.length());
                         //==============================================================================
-                        if(getRoomPrice(fent, enr, room));               //then we call the method in the aim to get price of this hotel. 
+                        if(getStars(fent, enr, room));                   //then we call the method in the aim to get rang of this hotel
+                        if(getRoomPrice(fent, enr, room));               //then we call the method in the aim to get prices of this hotel. 
                     }
                     j=0;
                 }
@@ -74,9 +75,62 @@ public class FindInsideFile{
         }
     }
     
+    private boolean getStars(BufferedReader fent, String enr, Room room) throws IOException{
+        String temp;
+        char [] stars;                          //Use to know if the hotel is ranked
+        char [] notRanked; 
+        
+        temp="\"b_class\" : ";                                               //put "\"b_class\" : " inside stars, in the aim to reach stars of hotel
+        stars = new char[temp.length()];
+        for (int i=0;i<temp.length();i++){
+            stars[i]=temp.charAt(i);
+        }
+        
+        temp="\"b_class_is_estimated\"";                                               //put "\"b_class_is_estimated\"" inside notRanked, in the aim to know if the hotel isn't ranked
+        notRanked = new char[temp.length()];
+        for (int i=0;i<temp.length();i++){
+            notRanked[i]=temp.charAt(i);
+        }
+        
+        while ((enr=fent.readLine())!=null){        //while we are a the end of the file
+            int i=0;
+            int j=i;
+
+            while(i<enr.length()-1){                //We gonna read one record 
+                
+                if(enr.charAt(i)==stars[j]){                 //if the letter that we read is equals to the first letter of stars
+                    while(enr.charAt(i)==stars[j] && j != stars.length-1){           //like above, we see if we find the good things
+                        i++; 
+                        j++;
+                    }
+                    if(j == stars.length-1){            //And if we do
+                        i++;
+                        room.setStars( Integer.parseInt(String.valueOf(enr.charAt(i) ) ) );
+                        return true;
+                    }
+                }
+                j=0;
+                if(enr.charAt(i)==notRanked[j]){                 //If we go in that if, that mean that we havn't quite our function before
+                                                                //and so, this hotel isn't ranked
+                    while(enr.charAt(i)==notRanked[j] && j != notRanked.length-1){           //like above, we see if we find the good things
+                        i++; 
+                        j++;
+                    }
+                    if(j == notRanked.length-1){            //And if we do
+                        int x=0;
+                        room.setStars(x);
+                        return true;
+                    }
+                }
+                j=0;
+                i++;
+            }
+        }
+        return false;
+    }
     private boolean getRoomPrice(BufferedReader fent, String enr, Room room) throws IOException{       //get price of room for an hotel 
         roomType=2;         //the roomType. 
-        
+        room.setRoomType(2);
         String temp;        //to put string inside variable (see juste below)
         StringBuffer price = new StringBuffer();
         
@@ -109,7 +163,7 @@ public class FindInsideFile{
             while(i<enr.length()-1){                //We gonna read one record 
                 
                 if(enr.charAt(i)==varRoomPrice[j]){                 //if the letter that we read is equals to the first letter of varRoomPrice (r)
-                    while(enr.charAt(i)==varRoomPrice[j] && j != varRoomPrice.length-1){           //like above, we see if we find the good things
+                    while(enr.charAt(i)==varRoomPrice[j] && j != varRoomPrice.length-1){           //like above, we see if we find the good strings
                         i++; 
                         j++;
                     }
@@ -134,7 +188,8 @@ public class FindInsideFile{
                     if(j == hotelPush.length-1){
                         price.insert(0, '0');                                       //we put an x inside the list hotelPrice, in the aim to see it when we want to display prices
                         room.addPrice(Integer.valueOf(price.toString()));
-                        return true;                                    //exist the prog
+                        
+                        return true;                                                //exit this function
                     }
                 }
                 j=0;
@@ -192,9 +247,9 @@ public class FindInsideFile{
     @Override
     public String toString(){
         String str;
-        str = "I've found " + hotelName.size() + " hotel\nWhich are : ";
-        for (int i=0;i<hotelName.size();i++){
-            str+=(hotelName.get(i));
+        str = "I've found " + hotelList.size() + " hotel\nWhich are : ";
+        for (int i=0;i<hotelList.size();i++){
+            str+=(hotelList.get(i));
         }
         return str;
     }
