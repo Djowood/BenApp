@@ -4,16 +4,17 @@
  */
 package benapp;
 
+import java.io.IOException;
+
 /**
  *
  * @author Djowood
  */
 public class BenApp {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
+ 
+  public static void main(String[] args) throws IOException {
+      //GetUrl get = new GetUrl();                                    //create an instance of GetUrl
+      FindInsideFile find = new FindInsideFile();
+      System.out.println(find);
+  }
 }
